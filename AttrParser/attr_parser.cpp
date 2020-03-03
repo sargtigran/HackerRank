@@ -64,6 +64,18 @@ public:
     }      
 
 private:
+
+
+    void ParseTag(std::stringstream& ss) 
+    {
+        Tag* t  = new Tag;
+        std::string name;
+        //ss >> name;
+        std::getline(ss, name, ' ');
+        //if (ss.fail()) { return ; } // error case
+        t->setName(name);
+    }
+
     void ParseTags(const std::string& line) 
     {
         std::stringstream ss(line);
@@ -73,10 +85,7 @@ private:
         Tag* t  = new Tag;
         while (ss >> c)  {
             if (c == '<') {
-                std::string name;
-                ss >> name;
-                if (ss.fail()) { return ; } // error case
-                t->setName(name);
+                ParseTag(ss);
             
             } else if (c == '>') {
 
