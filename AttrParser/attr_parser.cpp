@@ -73,6 +73,21 @@ private:
         //ss >> name;
         std::getline(ss, name, ' ');
         //if (ss.fail()) { return ; } // error case
+        //
+        //
+
+        while (ss >> c)  {
+            if (c == '>') {
+                t->setName(name);
+                name = "";        
+            } else if (c == ' ') {
+                t->setName(name);
+                ParseAttributes(ss);
+            } else {
+                name += 'c';
+            }
+                
+        }
         t->setName(name);
     }
 
@@ -86,7 +101,6 @@ private:
         while (ss >> c)  {
             if (c == '<') {
                 ParseTag(ss);
-            
             } else if (c == '>') {
 
             } else if (c == '/') {
