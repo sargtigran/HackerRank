@@ -19,6 +19,14 @@ void HRML::ParseInput()
     
 } 
 
+void HRML::ParseTag(std::stringstream& ss, Tag* tag) 
+{
+    assert(tag);
+    ParseAndSetName(ss, tag);
+    ParseAndSetAttributes(ss, tag);
+    ParseAndSetSubTags(ss, tag);
+}
+
 void HRML::dump() {
     std::cout << "Dumping .... " << std::endl;
     for (auto t : m_tags) {
@@ -68,30 +76,27 @@ void HRML::ParseAndSetAttributes(std::stringstream& ss, Tag* tag)
     } while (ss >> std::ws >> c && c != '>');
 }
 
-void HRML::ParseTag(std::stringstream& ss, Tag* parentTag) 
+void HRML::ParseAndSetSubTags(std::stringstream& ss, Tag* tag)
 {
     char c = 0;
-    ss >> std::ws >> c;
+    while (ss >> std::ws >> c && c == '<') {
 
-    if (c == '<') { ss >> c; }
-
-    if (c == '/') {
-        std::string name = ParseName(ss);
-        if (parentTag) {
-            assert(parentTag->getName() == name);
+        //if (c == '<') { ss >> c; }
+        
+        if (ss >> c && c == '/') {
+            std::string name = ParseName(ss);
+            assert(tag->getName() == name);
+            ss >> c;
+            assert(c == '>');
+            continue;
         }
-        return;
-    }
 
-    Tag* tag = new Tag;
+        ss.putback(c);
 
-    ss.putback(c);
-    ParseAndSetName(ss, tag);
-    ParseAndSetAttributes(ss, tag);
-    if (parentTag) {
-        parentTag->AddSubTag(tag);
+        Tag* subTag = new Tag;
+        ParseTag(ss, subTag);
+        tag->AddSubTag(subTag);
     }
-    ParseTag(ss, tag);
 }
 
 void HRML::AddTag(Tag* tag)
@@ -108,7 +113,7 @@ void HRML::ParseTags(const std::string& line)
 
     while (ss >> c)  {
         if (c == '<') {
-            Tag* t  = nullptr;//new Tag;
+            Tag* t  = new Tag;
             ParseTag(ss, t);
             AddTag(t);
         } else if (c == '>') {

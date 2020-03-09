@@ -67,6 +67,7 @@ private:
     std::string ParseName(std::stringstream& ss);
     void ParseAndSetName(std::stringstream& ss, Tag* tag);
     void ParseAndSetAttributes(std::stringstream& ss, Tag* tag);
+    void ParseAndSetSubTags(std::stringstream& ss, Tag* tag);
     void ParseTag(std::stringstream& ss, Tag* parentTag = nullptr) ;
     void ParseTags(const std::string& line);
     void AddTag(Tag* tag);
