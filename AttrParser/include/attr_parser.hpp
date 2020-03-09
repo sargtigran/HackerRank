@@ -41,6 +41,17 @@ public:
     {
         m_tags.insert({tag->getName(), tag});
     }
+
+    void dump ()
+    {
+        std::cout <<  m_name << "\n\t";
+        for (auto att : m_attributes) {
+            std::cout << att.first << " : " << att.second << "\n\t";
+        }
+        for (auto t : m_tags) {
+            t.second->dump();
+        }
+    } 
 };
 
 class HRML 

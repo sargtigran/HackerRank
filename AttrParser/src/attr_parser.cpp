@@ -20,11 +20,9 @@ void HRML::ParseInput()
 } 
 
 void HRML::dump() {
+    std::cout << "Dumping .... " << std::endl;
     for (auto t : m_tags) {
-        std::cout << t.first << "\n\t";
-        for (auto att : t.second->getAttributes()) {
-            std::cout << att.first << " : " << att.second << "\n\t";
-        }  
+        t.second->dump();
     }
 }      
 
@@ -108,10 +106,11 @@ void HRML::ParseTags(const std::string& line)
 
     char c = 0;
 
-    Tag* t  = new Tag;
     while (ss >> c)  {
         if (c == '<') {
-            ParseTag(ss);
+            Tag* t  = nullptr;//new Tag;
+            ParseTag(ss, t);
+            AddTag(t);
         } else if (c == '>') {
 
         } else if (c == '/') {
@@ -119,15 +118,14 @@ void HRML::ParseTags(const std::string& line)
         } else if (c == '=') {
 
         } else if (std::isalnum(c)) {
-            ss.putback(c);
-            std::string attr_name;
-            std::string attr_value;
-            ss >> attr_name;
-            ss >> attr_value;
-            t->addAttribute(attr_name, attr_value);
+            ///ss.putback(c);
+            ///std::string attr_name;
+            ///std::string attr_value;
+            ///ss >> attr_name;
+            ///ss >> attr_value;
+            ///t->addAttribute(attr_name, attr_value);
         }
     }
-    AddTag(tag);
 }
 
 
