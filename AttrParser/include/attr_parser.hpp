@@ -13,7 +13,7 @@ public:
     using  AttrType = std::unordered_map<std::string, std::string>;
 
 private:
-    std::unordered_map<std::string, Tag*> m_tags;
+    std::unordered_map<std::string, Tag*> m_subTags;
     AttrType m_attributes;
     std::string m_name;
 
@@ -39,16 +39,20 @@ public:
 
     void AddSubTag(Tag* tag)
     {
-        m_tags.insert({tag->getName(), tag});
+        m_subTags.insert({tag->getName(), tag});
     }
 
     void dump ()
     {
-        std::cout <<  m_name << "\n\t";
+        static std::string tab = "";
+        std::cout << tab;
+        std::cout << '<' << m_name << '>' << " subtags: " << m_subTags.size() << std::endl;
+        tab += "\t";
         for (auto att : m_attributes) {
-            std::cout << att.first << " : " << att.second << "\n\t";
+            std::cout << tab;
+            std::cout << att.first << " : " << att.second << std::endl;
         }
-        for (auto t : m_tags) {
+        for (auto t : m_subTags) {
             t.second->dump();
         }
     } 
@@ -64,11 +68,14 @@ public:
     void dump(); 
 
 private:
-    std::string ParseName(std::stringstream& ss);
     void ParseAndSetName(std::stringstream& ss, Tag* tag);
     void ParseAndSetAttributes(std::stringstream& ss, Tag* tag);
     void ParseAndSetSubTags(std::stringstream& ss, Tag* tag);
+    void ParseTagEnd(std::stringstream& ss, Tag* tag);
     void ParseTag(std::stringstream& ss, Tag* parentTag = nullptr) ;
     void ParseTags(const std::string& line);
     void AddTag(Tag* tag);
+
+    bool HasSubTag(std::stringstream& ss);
+    std::string ParseToken(std::stringstream& ss);
 };

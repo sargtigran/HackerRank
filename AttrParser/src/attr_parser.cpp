@@ -25,31 +25,58 @@ void HRML::ParseTag(std::stringstream& ss, Tag* tag)
     ParseAndSetName(ss, tag);
     ParseAndSetAttributes(ss, tag);
     ParseAndSetSubTags(ss, tag);
+    ParseTagEnd(ss, tag);
+}
+
+
+void HRML::ParseTagEnd(std::stringstream& ss, Tag* tag)
+{
+    assert(tag);
+    char c = 0;
+    
+    //if (! (ss >> std::ws >> c && c == '<')) {
+    //    assert(! "Syntax error");
+    //    // handle error
+    //}
+
+    if (ss >> c && c == '/') {
+        std::string name = ParseToken(ss);
+        if (tag->getName() != name) {
+            std::cerr << "begin name: " << tag->getName() << std::endl;
+            std::cerr << "end name: " << name << std::endl;
+            assert (! "Syntax error, do not matchting tag begin name with tag end name");
+        }
+        if (! (ss >> c && c == '>')) {
+            assert (! "Syntax error, do not exist closing brackets of tag end");
+        }
+    } else {
+        assert(! "Syntax error");
+    }
 }
 
 void HRML::dump() {
-    std::cout << "Dumping .... " << std::endl;
+    std::cout << "Dumping .... "  << m_tags.size() << std::endl;
     for (auto t : m_tags) {
         t.second->dump();
     }
 }      
 
-std::string HRML::ParseName(std::stringstream& ss)
+std::string HRML::ParseToken(std::stringstream& ss)
 {
     char c = 0;
-    std::string name;
+    std::string token;
     ss >> std::ws;
     while (ss >> c && std::isalnum(c)) {
-        name += c;
+        token += c;
     }
     ss.putback(c);
-    return name;
+    return token;
 }
 
 void HRML::ParseAndSetName(std::stringstream& ss, Tag* tag)
 {
     assert(tag);
-    std::string name = ParseName(ss);
+    std::string name = ParseToken(ss);
     tag->setName(name);
 }
 
@@ -58,13 +85,13 @@ void HRML::ParseAndSetAttributes(std::stringstream& ss, Tag* tag)
     assert(tag);
     char c = 0;
     do {
-        std::string name = ParseName(ss);
+        std::string name = ParseToken(ss);
         std::string value;
         ss >> std::ws >> c;
         if (c == '=') {
             ss >> std::ws >> c;
             if (c == '\"') {
-                value = ParseName(ss);
+                value = ParseToken(ss);
                 ss >> c;
                 assert (c == '\"');
             }
@@ -76,23 +103,24 @@ void HRML::ParseAndSetAttributes(std::stringstream& ss, Tag* tag)
     } while (ss >> std::ws >> c && c != '>');
 }
 
-void HRML::ParseAndSetSubTags(std::stringstream& ss, Tag* tag)
+bool HRML::HasSubTag(std::stringstream& ss)
 {
     char c = 0;
-    while (ss >> std::ws >> c && c == '<') {
-
-        //if (c == '<') { ss >> c; }
-        
-        if (ss >> c && c == '/') {
-            std::string name = ParseName(ss);
-            assert(tag->getName() == name);
-            ss >> c;
-            assert(c == '>');
-            continue;
+    bool res  = true;
+    ss >> std::ws >> c; 
+    if (c == '<') {
+        char c1 = ss.peek();
+        if (c1 == '/') {
+            res = false;
         }
+    }
+    //ss.putback(c);
+    return res;
+}
 
-        ss.putback(c);
-
+void HRML::ParseAndSetSubTags(std::stringstream& ss, Tag* tag)
+{
+    while (HasSubTag(ss)) {
         Tag* subTag = new Tag;
         ParseTag(ss, subTag);
         tag->AddSubTag(subTag);
