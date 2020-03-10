@@ -68,14 +68,14 @@ public:
     void dump(); 
 
 private:
-    void ParseAndSetName(std::stringstream& ss, Tag* tag);
-    void ParseAndSetAttributes(std::stringstream& ss, Tag* tag);
-    void ParseAndSetSubTags(std::stringstream& ss, Tag* tag);
+    void ParseTagName(std::stringstream& ss, Tag* tag);
+    void ParseTagAttributes(std::stringstream& ss, Tag* tag);
+    void ParseSubTags(std::stringstream& ss, Tag* tag);
     void ParseTagEnd(std::stringstream& ss, Tag* tag);
     void ParseTag(std::stringstream& ss, Tag* parentTag = nullptr) ;
     void ParseTags(const std::string& line);
     void AddTag(Tag* tag);
 
-    bool HasSubTag(std::stringstream& ss);
+    bool IsNewTag(std::stringstream& ss);
     std::string ParseToken(std::stringstream& ss);
 };

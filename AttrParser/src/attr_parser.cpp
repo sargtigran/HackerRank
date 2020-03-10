@@ -11,7 +11,9 @@ void HRML::ParseInput()
     std::string l = "<tag1 attr1 = \"val1\" bbb = \"ccccc\"> \n"
                          " <tag2 vssstt = \"rrrrrrrrrrrr\" attt = \"vvvvvvvvv\"> </tag2> \n"
                          " <tag3 aaa=\"lll\"> </tag3>"
-                    "</tag1>";
+                    "</tag1> \n"
+                    "<tag55 attr55 = \"val55\" bbb55 = \"ccccc55\"> \n"
+                    "</tag55>";
     //while (std::getline(std::cin, l)) {
         ParseTags(l);
         //ParseCommands();
@@ -22,9 +24,9 @@ void HRML::ParseInput()
 void HRML::ParseTag(std::stringstream& ss, Tag* tag) 
 {
     assert(tag);
-    ParseAndSetName(ss, tag);
-    ParseAndSetAttributes(ss, tag);
-    ParseAndSetSubTags(ss, tag);
+    ParseTagName(ss, tag);
+    ParseTagAttributes(ss, tag);
+    ParseSubTags(ss, tag);
     ParseTagEnd(ss, tag);
 }
 
@@ -73,14 +75,14 @@ std::string HRML::ParseToken(std::stringstream& ss)
     return token;
 }
 
-void HRML::ParseAndSetName(std::stringstream& ss, Tag* tag)
+void HRML::ParseTagName(std::stringstream& ss, Tag* tag)
 {
     assert(tag);
     std::string name = ParseToken(ss);
     tag->setName(name);
 }
 
-void HRML::ParseAndSetAttributes(std::stringstream& ss, Tag* tag)
+void HRML::ParseTagAttributes(std::stringstream& ss, Tag* tag)
 {
     assert(tag);
     char c = 0;
@@ -103,12 +105,13 @@ void HRML::ParseAndSetAttributes(std::stringstream& ss, Tag* tag)
     } while (ss >> std::ws >> c && c != '>');
 }
 
-bool HRML::HasSubTag(std::stringstream& ss)
+bool HRML::IsNewTag(std::stringstream& ss)
 {
     char c = 0;
-    bool res  = true;
+    bool res  = false;
     ss >> std::ws >> c; 
     if (c == '<') {
+        res  = true;
         char c1 = ss.peek();
         if (c1 == '/') {
             res = false;
@@ -118,9 +121,9 @@ bool HRML::HasSubTag(std::stringstream& ss)
     return res;
 }
 
-void HRML::ParseAndSetSubTags(std::stringstream& ss, Tag* tag)
+void HRML::ParseSubTags(std::stringstream& ss, Tag* tag)
 {
-    while (HasSubTag(ss)) {
+    while (IsNewTag(ss)) {
         Tag* subTag = new Tag;
         ParseTag(ss, subTag);
         tag->AddSubTag(subTag);
@@ -137,27 +140,10 @@ void HRML::ParseTags(const std::string& line)
     std::stringstream ss(line);
     ss >> std::noskipws;
 
-    char c = 0;
-
-    while (ss >> c)  {
-        if (c == '<') {
-            Tag* t  = new Tag;
-            ParseTag(ss, t);
-            AddTag(t);
-        } else if (c == '>') {
-
-        } else if (c == '/') {
-
-        } else if (c == '=') {
-
-        } else if (std::isalnum(c)) {
-            ///ss.putback(c);
-            ///std::string attr_name;
-            ///std::string attr_value;
-            ///ss >> attr_name;
-            ///ss >> attr_value;
-            ///t->addAttribute(attr_name, attr_value);
-        }
+    while (IsNewTag(ss))  {
+        Tag* t  = new Tag;
+        ParseTag(ss, t);
+        AddTag(t);
     }
 }
 
