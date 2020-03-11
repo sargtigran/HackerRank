@@ -14,12 +14,21 @@ void HRML::ParseInput()
                     "</tag1> \n"
                     "<tag55 attr55 = \"val55\" bbb55 = \"ccccc55\"> \n"
                     "</tag55>";
-    //while (std::getline(std::cin, l)) {
-        ParseTags(l);
-        //ParseCommands();
-    //}
-    
+    ParseTags(l);
+    ParseCommands();
 } 
+
+void HRML::ParseCommands(const std::string& cl) 
+{
+    std::stringstream ss;
+    ss << cl;
+
+    do {
+        std::string tag_name = ParseToken(ss);
+        tag = GetTag(tag_name);
+    } while (ss >> c && c == '.');
+
+}
 
 void HRML::ParseTag(std::stringstream& ss, Tag* tag) 
 {
@@ -137,7 +146,7 @@ void HRML::AddTag(Tag* tag)
 
 void HRML::ParseTags(const std::string& line) 
 {
-    std::stringstream ss(line);
+    std::stringstream ss(std::cin);
     ss >> std::noskipws;
 
     while (IsNewTag(ss))  {

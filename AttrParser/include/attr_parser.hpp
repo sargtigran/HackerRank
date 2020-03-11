@@ -42,18 +42,17 @@ public:
         m_subTags.insert({tag->getName(), tag});
     }
 
-    void dump ()
+    void dump (std::string tab = "")
     {
-        static std::string tab = "";
         std::cout << tab;
-        std::cout << '<' << m_name << '>' << " subtags: " << m_subTags.size() << std::endl;
+        std::cout << '<' << m_name << '>' << std::endl;
         tab += "\t";
         for (auto att : m_attributes) {
             std::cout << tab;
             std::cout << att.first << " : " << att.second << std::endl;
         }
         for (auto t : m_subTags) {
-            t.second->dump();
+            t.second->dump(tab);
         }
     } 
 };
@@ -75,6 +74,7 @@ private:
     void ParseTag(std::stringstream& ss, Tag* parentTag = nullptr) ;
     void ParseTags(const std::string& line);
     void AddTag(Tag* tag);
+    Tag* GetTag(const std::string& name);
 
     bool IsNewTag(std::stringstream& ss);
     std::string ParseToken(std::stringstream& ss);
