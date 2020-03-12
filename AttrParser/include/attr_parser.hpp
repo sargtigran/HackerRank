@@ -37,9 +37,27 @@ public:
         return m_attributes;
     }
 
+    std::string GetAttribute(const std::string& name)
+    {
+        auto it = m_attributes.find(name);
+        if (it != m_attributes.end()) {
+            return it->second;
+        }
+        return "";
+    }
+
     void AddSubTag(Tag* tag)
     {
         m_subTags.insert({tag->getName(), tag});
+    }
+
+    Tag* GetSubTag(const std::string& name)
+    {
+        auto it = m_subTags.find(name);
+        if (it != m_subTags.end()) {
+            return it->second;
+        }
+        return nullptr;
     }
 
     void dump (std::string tab = "")
@@ -75,6 +93,7 @@ private:
     void ParseTags(const std::string& line);
     void AddTag(Tag* tag);
     Tag* GetTag(const std::string& name);
+    void RunQuery(const std::string& query, std::string& out);
 
     bool IsNewTag(std::stringstream& ss);
     std::string ParseToken(std::stringstream& ss);
