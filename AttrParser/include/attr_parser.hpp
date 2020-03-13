@@ -91,10 +91,11 @@ private:
     void ParseTagEnd(std::stringstream& ss, Tag* tag);
     void ParseTag(std::stringstream& ss, Tag* parentTag = nullptr) ;
     void ParseTags(const std::string& line);
-    void AddTag(Tag* tag);
-    Tag* GetTag(const std::string& name);
     void RunQuery(const std::string& query, std::string& out);
+    void RunQueries(const std::string& queries);
 
     bool IsNewTag(std::stringstream& ss);
     std::string ParseToken(std::stringstream& ss);
+    void AddTag(Tag* tag);
+    Tag* GetTag(const std::string& name);
 };

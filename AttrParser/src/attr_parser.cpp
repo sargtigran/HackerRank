@@ -15,26 +15,25 @@ void HRML::ParseInput()
                     "<tag55 attr55 = \"val55\" bbb55 = \"ccccc55\"> \n"
                     "</tag55>";
 
-    std::string c = "tag1.tag2~anun\n"
+    std::string c = "tag1~bbb\n"
                     "tag1~attr1\n"
-                    "tag1.tag3~bbb55\n"
-                    "tag55~attr56";
+                    "tag1.tag2~azg\n"
+                    "tag55~attr55\n"
+                    "tag55~bbb55";
     ParseTags(l);
-    std::string o;
-    RunQuery(c, o);
-    std::cout << "Output:" << std::endl;
-    std::cout << o << std::endl;
-    //ParseCommands();
+    RunQueries(c);
 } 
 
 void HRML::RunQueries(const std::string& queries)
 {
     std::stringstream ss;
     ss << queries;
-    char c = 0;
-    ss >> std::noskipws;
-    while (ss >> c && c !=) {
-        ss.putback(c);
+    while (ss.good())
+    {
+        std::string query, out;
+        std::getline(ss, query);
+        RunQuery(query, out);
+        std::cout << out << std::endl;
     }
 }
 
@@ -50,25 +49,23 @@ void HRML::RunQuery(const std::string& query, std::string& out)
         return;
     }
     char c;
-    while (ss >> c) {
-        std::string o;
-        if (c == '.') { 
-            name = ParseToken(ss);
-            tag = tag->GetSubTag(name);
-            if (! tag) {
-                o = "Not found!";
-            }
-        } else if (c == '~') {
-            name = ParseToken(ss);
-            o = tag->GetAttribute(name);
-
-            if (o.empty()) {
-                o = "Not found!";
-            }
-        } else {
-            assert (!"Icorrect query format");
+    while (ss >> c && c == '.') {
+        name = ParseToken(ss);
+        tag = tag->GetSubTag(name);
+        if (! tag) {
+            out = "Not found!";
         }
-        out += o + '\n'; 
+    }
+
+    if (c == '~') {
+        name = ParseToken(ss);
+        out = tag->GetAttribute(name);
+
+        if (out.empty()) {
+            out = "Not found!";
+        }
+    } else {
+        assert (!"Icorrect query format");
     }
 }
 
@@ -145,7 +142,8 @@ void HRML::ParseTagAttributes(std::stringstream& ss, Tag* tag)
 {
     assert(tag);
     char c = 0;
-    do {
+    while (ss >> std::ws >> c && c != '>') {
+        ss.putback(c); // bad practice
         std::string name = ParseToken(ss);
         std::string value;
         ss >> std::ws >> c;
@@ -161,7 +159,7 @@ void HRML::ParseTagAttributes(std::stringstream& ss, Tag* tag)
             //error
         }
         tag->addAttribute(name, value);
-    } while (ss >> std::ws >> c && c != '>');
+    }
 }
 
 bool HRML::IsNewTag(std::stringstream& ss)
