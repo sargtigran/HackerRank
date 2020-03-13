@@ -60,7 +60,7 @@ public:
         return nullptr;
     }
 
-    void dump (std::string tab = "")
+    void dump(std::string tab = "")
     {
         std::cout << tab;
         std::cout << '<' << m_name << '>' << std::endl;
@@ -79,23 +79,30 @@ class HRML
 {
 private:
     std::unordered_map<std::string, Tag*> m_tags;
+    std::istream& input;
 
 public:
+    
+    HRML(std::istream& istr = std::cin)
+        : input(istr) 
+    {}
+    
     void ParseInput();
     void dump(); 
 
 private:
-    void ParseTagName(std::stringstream& ss, Tag* tag);
-    void ParseTagAttributes(std::stringstream& ss, Tag* tag);
-    void ParseSubTags(std::stringstream& ss, Tag* tag);
-    void ParseTagEnd(std::stringstream& ss, Tag* tag);
-    void ParseTag(std::stringstream& ss, Tag* parentTag = nullptr) ;
-    void ParseTags(const std::string& line);
-    void RunQuery(const std::string& query, std::string& out);
-    void RunQueries(const std::string& queries);
+    void ParseTags(const unsigned n);
+    void RunQueries(const unsigned q);
 
-    bool IsNewTag(std::stringstream& ss);
-    std::string ParseToken(std::stringstream& ss);
+    void ParseTagName(Tag* tag);
+    void ParseTagAttributes(Tag* tag);
+    void ParseSubTags(Tag* tag);
+    void ParseTagEnd(Tag* tag);
+    void ParseTag(Tag* parentTag = nullptr) ;
+    void RunQuery(std::string& out);
+
+    bool IsNewTag();
+    std::string ParseToken();
     void AddTag(Tag* tag);
     Tag* GetTag(const std::string& name);
 };

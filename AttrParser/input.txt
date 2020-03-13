@@ -1,0 +1,12 @@
+2 5
+<tag1 attr1 = "val1" bbb = "ccccc">
+    <tag2 anun = "rrrrrrrrrrrr" azg = "vvvvvvvvv"> </tag2>
+    <tag3 aaa="lll"> </tag3>
+</tag1>
+<tag55 attr55 = "val55" bbb55 = "ccccc55"> </tag55>
+
+tag1~bbb
+tag1~attr1
+tag1.tag2~azg
+tag55~attr55
+tag55~bbb55
