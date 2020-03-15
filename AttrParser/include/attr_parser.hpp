@@ -80,11 +80,13 @@ class HRML
 private:
     std::unordered_map<std::string, Tag*> m_tags;
     std::istream& input;
+    std::ostream& output;
 
 public:
     
-    HRML(std::istream& istr = std::cin)
-        : input(istr) 
+    HRML(std::istream& istr = std::cin, std::ostream& ostr = std::cout)
+        : input(istr)
+        , output(ostr)
     {}
     
     void ParseInput();
@@ -103,6 +105,8 @@ private:
 
     bool IsNewTag();
     std::string ParseToken();
+    std::string ParseLiteral();
     void AddTag(Tag* tag);
     Tag* GetTag(const std::string& name);
 };
+
