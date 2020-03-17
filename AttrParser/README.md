@@ -11,18 +11,18 @@ The closing tags follow the format:
 
 **</tag-name>**
 
-For example:
-
+_For example:_
+```
 <tag1 value = "HelloWorld">
 <tag2 name = "Name1">
 </tag2>
 </tag1>
-
-The attributes are referenced as:
-
+```
+_The attributes are referenced as:_
+```
 tag1~value  
 tag1.tag2~name
-
+```
 You are given the source code in HRML format consisting of  lines. You have to answer  queries. Each query asks you to print the value of the attribute specified. Print "Not Found!" if there isn't any such attribute.
 
 Input Format
@@ -45,6 +45,7 @@ Print the value of the attribute for each query. Print "Not Found!" without quot
 
 Sample Input
 ------------
+```
 4 3
 <tag1 value = "HelloWorld">
 <tag2 name = "Name1">
@@ -53,9 +54,11 @@ Sample Input
 tag1.tag2~name
 tag1~name
 tag1~value
-
+```
 Sample Output
 -------------
+```
 Name1
 Not Found!
 HelloWorld
+```
