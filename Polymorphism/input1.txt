@@ -1,0 +1,26 @@
+25 3
+set 17 1248
+set 18 923
+get 9
+get 20
+get 6
+get 11
+get 15
+get 15
+get 18
+get 11
+get 18
+get 17
+get 2
+set 1 461
+get 20
+set 12 1745
+set 11 1524
+get 8
+set 17 777
+get 17
+get 1
+set 1 222
+get 1
+get 12
+get 11
